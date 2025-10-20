@@ -273,7 +273,9 @@ class BitVector {
         uint8_t* array;
         byte allocated;
         byte nb_bits;
-    public:
+		    bool bit_swap=true;
+
+	public:
         BitVector();
         BitVector(short arg_nb_bits, short arg_nb_bytes, byte b0, byte b1);
         BitVector(short arg_nb_bits, short arg_nb_bytes, byte b0, byte b1,
@@ -298,7 +300,12 @@ class BitVector {
         virtual byte get_nth_byte(byte n) const;
 
         virtual char *to_str() const;
-        virtual short cmp(const BitVector *p) const;
+		
+		    virtual short cmp(const BitVector *p) const;
+			
+		    void set_bit_swap(bool pState);
+			
+			  int raw_bytes(uint8_t *pBuffer);
 };
 
 

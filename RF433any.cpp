@@ -613,10 +613,39 @@ byte BitVector::get_nth_bit(byte n) const {
     return !!(array[index] & bitread);
 }
 
-    // Bit numbering starts at 0
+void BitVector::set_bit_swap(bool pState) {
+	bit_swap = pState;
+	// Bit numbering starts at 0
+}
+
 byte BitVector::get_nth_byte(byte n) const {
     assert(n >= 0 && n < get_nb_bytes());
-    return array[n];
+	  if (bit_swap)
+		{
+		  byte out_byte = 0;
+		  byte in_byte = array[n];
+		  if (in_byte & 0x01)
+			  out_byte |= 0x80;
+		  if (in_byte & 0x02)
+			  out_byte |= 0x40;
+		  if (in_byte & 0x04)
+			  out_byte |= 0x20;
+		  if (in_byte & 0x08)
+			  out_byte |= 0x10;
+		  if (in_byte & 0x10)
+			  out_byte |= 0x08;
+		  if (in_byte & 0x20)
+			  out_byte |= 0x04;
+		  if (in_byte & 0x40)
+			  out_byte |= 0x02;
+		  if (in_byte & 0x80)
+			  out_byte |= 0x01;		  
+		  return out_byte;
+	  }
+	  else
+		{
+		  return array[n];		  
+	  }
 }
 
     // *IMPORTANT*
@@ -649,6 +678,20 @@ char* BitVector::to_str() const {
     assert(j <= nb_bytes * 3);
 
     return ret;
+}
+
+int BitVector::raw_bytes(uint8_t* pBuffer)
+{
+    if (!get_nb_bits())
+        return 0;
+
+    byte nb_bytes = get_nb_bytes();
+
+    for (int i = nb_bytes - 1; i >= 0 ; --i)
+		{
+		  pBuffer[i] = get_nth_byte(i);
+    }
+    return nb_bytes;
 }
 
 short BitVector::cmp(const BitVector *p) const {
